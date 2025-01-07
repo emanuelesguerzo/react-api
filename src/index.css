@@ -76,7 +76,8 @@ textarea {
 .tag-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 25px;
+  margin-left: 100px;
 }
 
 .inputTag {
@@ -151,34 +152,53 @@ textarea {
   border-radius: 24px;
   padding: 6px 10px;
   font-weight: bold;
-  border: 2px solid #000000;
-}
-
-.html {
-  background-color: #e34c26;
+  border: none;
   color: #ffffff;
+  user-select: none;
 }
 
-.css {
-  background-color: #2965f1;
-  color: #ffffff;
+.dolce {
+  background-color: #f50909;
 }
 
-.javascript {
-  background-color: #f7df1e;
+.fritto {
+  background-color: #cca629;
 }
 
-.express {
-  background-color: #555555;
-  color: #ffffff;
+.semplice {
+  background-color: #0b773c;
 }
 
-.node {
+.colazione {
+  background-color: #3f76f5;
+}
+
+.tradizionale {
+  background-color: #ce7df3;
+}
+
+.snack {
+  background-color: #820c99;
+}
+
+.salato {
+  background-color: #ca3eac;
+}
+
+.vegetariano {
   background-color: #68a063;
 }
 
-.react {
-  background-color: #61dafb;
+.primo {
+  background-color: #31a8c9;
+}
+
+.colorato {
+  background-color: #db7c2e;
+}
+
+.rustico {
+  background-color: #a0522d;
 }
 
 /* Card Heading */

@@ -5,7 +5,23 @@ const initialPostData = {
   title: "",
   content: "",
   image: "",
+  tags: [],
 }
+
+const availableTags = [
+  "Dolce",
+  "Primo",
+  "Rustico",
+  "Tradizionale",
+  "Snack",
+  "Salato",
+  "Fritto",
+  "Semplice",
+  "Colazione",
+  "Vegetariano",
+  "Colorato",
+  "Rustico",
+]
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -124,6 +140,38 @@ function App() {
             ></textarea>
           </div>
 
+          {/* Tags Checkboxes */}
+          <div className="input post-tags">
+            <label htmlFor="TagContainer">Tag</label>
+            <div className="tag-container" id="TagContainer">
+              {availableTags.map((curTag) => (
+                <div key={curTag} className="inputTag">
+                  <input
+                    className=""
+                    type="checkbox"
+                    id={curTag}
+                    name="tags"
+                    value={curTag}
+                    checked={newPost.tags.includes(curTag)}
+                    onChange={(event) => {
+                      const { value, checked } = event.target;
+
+                      setNewPost((curPost) => ({
+                        ...curPost,
+                        tags: checked
+                          ? [...curPost.tags, value]
+                          : curPost.tags.filter((curTag) => curTag !== value),
+                      }));
+                    }}
+                  />
+                  <div className={`tag ${curTag.toLowerCase()}`}>
+                    {curTag}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -145,6 +193,17 @@ function App() {
                   <img
                     src={getImgSrc(curPost.image)}
                     alt="L'immagine del Post" />
+                </div>
+                <div className="tags-list">
+                  {curPost.tags.length > 0 &&
+                    curPost.tags.map((curTag) => (
+                      <span
+                        key={curTag}
+                        className={`tag ${curTag.toLowerCase()}`}
+                      >
+                        {curTag}
+                      </span>
+                    ))}
                 </div>
                 <div className="card-heading">
                   <h2>{curPost.title}</h2>
