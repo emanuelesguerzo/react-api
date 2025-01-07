@@ -20,7 +20,6 @@ const availableTags = [
   "Colazione",
   "Vegetariano",
   "Colorato",
-  "Rustico",
 ]
 
 function App() {
