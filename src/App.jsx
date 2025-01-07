@@ -5,9 +5,7 @@ const initialPostData = {
   title: "",
   content: "",
   image: "",
-  tags: [],
 }
-
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -65,6 +63,18 @@ function App() {
       });
   };
 
+  const getImgSrc = (path) => {
+    if (!path) {
+      return "https://placehold.co/600x400";
+    }
+
+    if (path.startsWith("http://") || path.startsWith("https://")) {
+      return path;
+    } else {
+      return `http://localhost:3000${path}`;
+    }
+  }
+
   return (
     <>
       <header>
@@ -87,6 +97,19 @@ function App() {
             />
           </div>
 
+          {/* Image Input */}
+          <div className=" input post-image">
+            <label htmlFor="PostImage">URL Immagine</label>
+            <input
+              type="text"
+              placeholder="URL Immagine del Post"
+              id="PostImage"
+              name="image"
+              value={newPost.image}
+              onChange={handleInputChange}
+            />
+          </div>
+
           {/* Content Input */}
           <div className="input post-content">
             <label htmlFor="PostContent">Contenuto</label>
@@ -99,19 +122,6 @@ function App() {
               value={newPost.content}
               onChange={handleInputChange}
             ></textarea>
-          </div>
-
-          {/* Image Input */}
-          <div className=" input post-image">
-            <label htmlFor="PostImage">URL Immagine</label>
-            <input
-              type="text"
-              placeholder="URL Immagine del Post"
-              id="PostImage"
-              name="image"
-              value={newPost.image}
-              onChange={handleInputChange}
-            />
           </div>
 
           {/* Submit Button */}
@@ -133,7 +143,7 @@ function App() {
               >
                 <div className="card-image">
                   <img
-                    src={`http://localhost:3000${curPost.image}`}
+                    src={getImgSrc(curPost.image)}
                     alt="L'immagine del Post" />
                 </div>
                 <div className="card-heading">
