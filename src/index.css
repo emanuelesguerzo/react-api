@@ -96,19 +96,20 @@ textarea {
 /* Buttons */
 .btn {
   color: #ffffff;
-  border: 2px solid #000000;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
 }
 
 .submit {
   background-color: #4747f7;
-  width: 30%;
+  width: 50%;
   padding: 10px 15px;
+  border: none;
   border-radius: 24px;
   font-size: 1.3rem;
   margin: 40px 0;
   align-self: center;
+  transition: scale 0.4s ease-in-out;
 }
 
 /* Remove Button */
@@ -117,11 +118,13 @@ textarea {
   height: 45px;
   background-color: #ff0000;
   border-radius: 50%;
+  border: none;
 }
 
 /* Button Hovers */
 .btn.submit:hover {
   background-color: #3636d1; 
+  scale: 1.1;
 }
 
 .btn.remove:hover {
@@ -217,4 +220,23 @@ span {
 
 .cross {
   color: #ff0000;
+}
+
+/* ////////////////// */
+/* // MEDIA QUERY // */
+/* //////////////// */
+@media screen and (max-width: 1024px) {
+  .card {
+    width: 100%;
+  }
+  .submit {
+    width: 80%;
+  }
+
+}
+
+@media screen and (max-width: 425px) {
+  .container {
+    width: 90%;
+  }
 }
