@@ -3,33 +3,26 @@ import axios from "axios"
 
 const initialPostData = {
   title: "",
-  author: "",
-  image: "",
   content: "",
-  category: "",
-  state: false,
+  image: "",
   tags: [],
 }
-
-const availableTags = [
-  "HTML",
-  "CSS",
-  "JavaScript",
-  "Express",
-  "Node",
-  "React",
-];
 
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState(initialPostData);
-  
+
   useEffect(() => {
-    if (newPost.state) {
-      alert("Stai pubblicando un post!");
-    }
-  }, [newPost.state]);
+    axios.get("http://localhost:3000/posts")
+      .then((resp) => {
+        setPosts(resp.data.data)
+        console.log(resp.data.data)
+      })
+      .catch((err) => {
+        console.error("Errore durante il recupero dati:", err)
+      })
+  }, []);
 
   const handleNewPostSubmit = (event) => {
     event.preventDefault();
@@ -41,13 +34,15 @@ function App() {
       return alert(message);
     }
 
-    const postToAdd = {
-      ...newPost,
-      id: Date.now(),
-    };
-
-    setPosts([...posts, postToAdd]);
-    setNewPost(initialPostData);
+    axios.post("http://localhost:3000/posts", newPost)
+      .then((resp) => {
+        const newArray = [...posts, resp.data];
+        setPosts(newArray);
+        setNewPost(initialPostData)
+      })
+      .catch((err) => {
+        console.error("Errore durante l'invio del post:", err)
+      })
   }
 
   const handleInputChange = (event) => {
@@ -61,9 +56,14 @@ function App() {
   };
 
   const removePost = (postToRemove) => {
-    const newArray = posts.filter(curPost => curPost.title !== postToRemove.title);
-    setPosts(newArray);
-  }
+    axios.delete(`http://localhost:3000/posts/${postToRemove.id}`)
+      .then(() => {
+        setPosts(posts.filter((curPost) => curPost.id !== postToRemove.id));
+      })
+      .catch((err) => {
+        console.error("Errore durante la cancellazione del post:", err);
+      });
+  };
 
   return (
     <>
@@ -87,51 +87,7 @@ function App() {
             />
           </div>
 
-          {/* Author Input */}
-          <div className="input author-name">
-            <label htmlFor="AuthorName">Nome Autore</label>
-            <input
-              type="text"
-              placeholder="Nome dell'Autore"
-              id="AuthorName"
-              name="author"
-              value={newPost.author}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {/* Image Input */}
-          <div className=" input post-image">
-            <label htmlFor="PostImage">URL Immagine</label>
-            <input
-              type="text"
-              placeholder="URL Immagine del Post"
-              id="PostImage"
-              name="image"
-              value={newPost.image}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {/* Category Select */}
-          <div className=" input category">
-            <label htmlFor="Category">Categoria</label>
-            <select
-              id="Category"
-              name="category"
-              value={newPost.category}
-              onChange={handleInputChange}
-            >
-              <option value="" selected disabled hidden>Seleziona una categoria</option>
-              <option value="News">News</option>
-              <option value="Update">Update</option>
-              <option value="Tutorial">Tutorial</option>
-              <option value="Tips">Tips</option>
-            </select>
-          </div>
-
-
-          {/* Content */}
+          {/* Content Input */}
           <div className="input post-content">
             <label htmlFor="PostContent">Contenuto</label>
             <textarea
@@ -145,44 +101,15 @@ function App() {
             ></textarea>
           </div>
 
-          {/* Tags Checkboxes */}
-          <div className=" input post-tags">
-            <label htmlFor="TagContainer">Tag</label>
-            <div className="tag-container" id="TagContainer">
-              {availableTags.map((curTag) => (
-                <div key={curTag} className="inputTag">
-                  <input
-                    className=""
-                    type="checkbox"
-                    id={curTag}
-                    name="tags"
-                    value={curTag}
-                    checked={newPost.tags.includes(curTag)}
-                    onChange={(event) => {
-                      const { value, checked } = event.target;
-
-                      setNewPost((curPost) => ({
-                        ...curPost,
-                        tags: checked
-                          ? [...curPost.tags, value]
-                          : curPost.tags.filter((curTag) => curTag !== value),
-                      }));
-                    }}
-                  />
-                  {curTag}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* State Checkbox */}
-          <div className="input post-state">
-            <label htmlFor="PostState">Pubblica</label>
+          {/* Image Input */}
+          <div className=" input post-image">
+            <label htmlFor="PostImage">URL Immagine</label>
             <input
-              type="checkbox"
-              id="PostState"
-              name="state"
-              checked={newPost.state}
+              type="text"
+              placeholder="URL Immagine del Post"
+              id="PostImage"
+              name="image"
+              value={newPost.image}
               onChange={handleInputChange}
             />
           </div>
@@ -206,19 +133,8 @@ function App() {
               >
                 <div className="card-image">
                   <img
-                    src={curPost.image ? curPost.image : "https://placehold.co/600x400"}
+                    src={`http://localhost:3000${curPost.image}`}
                     alt="L'immagine del Post" />
-                </div>
-                <div className="tags-list">
-                  {curPost.tags.length > 0 &&
-                    curPost.tags.map((curTag) => (
-                      <span
-                        key={curTag}
-                        className={`tag ${curTag.toLowerCase()}`}
-                      >
-                        {curTag}
-                      </span>
-                    ))}
                 </div>
                 <div className="card-heading">
                   <h2>{curPost.title}</h2>
@@ -231,17 +147,6 @@ function App() {
                 </div>
                 <div className="card-content">
                   <p>{curPost.content}</p>
-                </div>
-                <div className="card-footer">
-                  <div className="author">{curPost.author || "Autore Sconosciuto"}</div>
-                  <div className="publish">
-                    {curPost.state ? (
-                      <div><span className="check">✔</span> Pubblicato</div>
-                    ) : (
-                      <div><span className="cross">✘</span> Bozza</div>
-                    )}
-                  </div>
-                  <div className="category">{curPost.category}</div>
                 </div>
               </li>
             ))}
