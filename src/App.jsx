@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios"
-import AppCard from "./components/AppCard"
+import AppCard from "./components/AppCard";
+import FormPrint from "./components/FormPrint";
+import AppHeader from "./components/AppHeader";
+
 
 const initialPostData = {
   title: "",
@@ -31,7 +34,6 @@ function App() {
     axios.get("http://localhost:3000/posts")
       .then((resp) => {
         setPosts(resp.data.data)
-        console.log(resp.data.data)
       })
       .catch((err) => {
         console.error("Errore durante il recupero dati:", err)
@@ -81,103 +83,25 @@ function App() {
 
   return (
     <>
-      <header>
-        <h1>React Form</h1>
-      </header>
+      <AppHeader />
 
       <main>
-        <form action="" className="container" onSubmit={handleNewPostSubmit}>
-
-          {/* Title Input */}
-          <div className="input post-title">
-            <label htmlFor="PostName">Titolo</label>
-            <input
-              type="text"
-              placeholder="Titolo del Post"
-              id="PostName"
-              name="title"
-              value={newPost.title}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {/* Image Input */}
-          <div className=" input post-image">
-            <label htmlFor="PostImage">URL Immagine</label>
-            <input
-              type="text"
-              placeholder="URL Immagine del Post"
-              id="PostImage"
-              name="image"
-              value={newPost.image}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {/* Content Input */}
-          <div className="input post-content">
-            <label htmlFor="PostContent">Contenuto</label>
-            <textarea
-              rows="4"
-              type="text"
-              placeholder="Contenuto del Post..."
-              id="PostContent"
-              name="content"
-              value={newPost.content}
-              onChange={handleInputChange}
-            ></textarea>
-          </div>
-
-          {/* Tags Checkboxes */}
-          <div className="input post-tags">
-            <label htmlFor="TagContainer">Tag</label>
-            <div className="tag-container" id="TagContainer">
-              {availableTags.map((curTag) => (
-                <div key={curTag} className="inputTag">
-                  <input
-                    className=""
-                    type="checkbox"
-                    id={curTag}
-                    name="tags"
-                    value={curTag}
-                    checked={newPost.tags.includes(curTag)}
-                    onChange={(event) => {
-                      const { value, checked } = event.target;
-
-                      setNewPost((curPost) => ({
-                        ...curPost,
-                        tags: checked
-                          ? [...curPost.tags, value]
-                          : curPost.tags.filter((curTag) => curTag !== value),
-                      }));
-                    }}
-                  />
-                  <div className={`tag ${curTag.toLowerCase()}`}>
-                    {curTag}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="btn submit"
-          >
-            Crea Post
-          </button>
-
-        </form>
+        <FormPrint
+          handleNewPostSubmit={handleNewPostSubmit}
+          handleInputChange={handleInputChange}
+          newPost={newPost}
+          availableTags={availableTags}
+          setNewPost={setNewPost}
+        />
 
         {posts.length > 0 ? (
           <ul className="container row">
             {posts.map((curPost) => (
               <AppCard
-                key={curPost.id} 
+                key={curPost.id}
                 curPost={curPost}
                 onRemove={() => {
-                  removePost(curPost) 
+                  removePost(curPost)
                 }}
               />
             ))}
@@ -188,6 +112,7 @@ function App() {
           </p>
         )}
       </main>
+
     </>
   )
 }
