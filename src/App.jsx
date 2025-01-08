@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios"
+import AppCard from "./components/AppCard"
 
 const initialPostData = {
   title: "",
@@ -77,18 +78,6 @@ function App() {
         console.error("Errore durante la cancellazione del post:", err);
       });
   };
-
-  const getImgSrc = (path) => {
-    if (!path) {
-      return "https://placehold.co/600x400";
-    }
-
-    if (path.startsWith("http://") || path.startsWith("https://")) {
-      return path;
-    } else {
-      return `http://localhost:3000${path}`;
-    }
-  }
 
   return (
     <>
@@ -184,39 +173,13 @@ function App() {
         {posts.length > 0 ? (
           <ul className="container row">
             {posts.map((curPost) => (
-              <li
-                key={curPost.id}
-                className="card"
-              >
-                <div className="card-image">
-                  <img
-                    src={getImgSrc(curPost.image)}
-                    alt="L'immagine del Post" />
-                </div>
-                <div className="tags-list">
-                  {curPost.tags.length > 0 &&
-                    curPost.tags.map((curTag) => (
-                      <span
-                        key={curTag}
-                        className={`tag ${curTag.toLowerCase()}`}
-                      >
-                        {curTag}
-                      </span>
-                    ))}
-                </div>
-                <div className="card-heading">
-                  <h2>{curPost.title}</h2>
-                  <button
-                    className="btn remove"
-                    onClick={() => { removePost(curPost) }}
-                  >
-                    <i className="fa-solid fa-trash"></i>
-                  </button>
-                </div>
-                <div className="card-content">
-                  <p>{curPost.content}</p>
-                </div>
-              </li>
+              <AppCard
+                key={curPost.id} 
+                curPost={curPost}
+                onRemove={() => {
+                  removePost(curPost) 
+                }}
+              />
             ))}
           </ul>
         ) : (
