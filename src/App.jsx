@@ -3,7 +3,7 @@ import axios from "axios"
 import AppCard from "./components/AppCard";
 import FormPrint from "./components/FormPrint";
 import AppHeader from "./components/AppHeader";
-
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const initialPostData = {
   title: "",
@@ -29,16 +29,41 @@ const availableTags = [
 function App() {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState(initialPostData);
+  const [filter, setFilter] = useState("all")
+  const [tag, setTag] = useState([])
 
   useEffect(() => {
-    axios.get("http://localhost:3000/posts")
+    getPosts();
+  }, [filter])
+
+  useEffect(() => {
+    getTags();
+  }, []);
+
+  const getPosts = (resp) => {
+    let url = `${apiUrl}/posts`;
+
+    if (filter !== "all") {
+      url += `?tags=${filter}`;
+    }
+
+    axios.get(url)
       .then((resp) => {
         setPosts(resp.data.data)
+
       })
       .catch((err) => {
         console.error("Errore durante il recupero dati:", err)
       })
-  }, []);
+  }
+
+  const getTags = () => {
+    axios.get(`${apiUrl}/tags`)
+      .then((resp) => {
+        setTag(resp.data.tags)
+        console.log(resp.data.tags)
+      })
+  }
 
   const handleNewPostSubmit = (event) => {
     event.preventDefault();
@@ -86,13 +111,29 @@ function App() {
       <AppHeader />
 
       <main>
+
         <FormPrint
           handleNewPostSubmit={handleNewPostSubmit}
           handleInputChange={handleInputChange}
           newPost={newPost}
           availableTags={availableTags}
           setNewPost={setNewPost}
+          filter={filter}
+          setFilter={setFilter}
         />
+
+        <section className="input filter container row">
+          <label htmlFor="tags">Filtra per Tag</label>
+          <select
+            name="tags"
+            id=""
+            value={filter}
+            onChange={(event) => setFilter(event.target.value.toLowerCase())}
+          >
+            <option value="all">Tutti</option>
+            {availableTags.map((curTag, index) => <option key={index} value={curTag.toLowerCase()}>{curTag}</option>)}
+          </select>
+        </section>
 
         {posts.length > 0 ? (
           <ul className="container row">

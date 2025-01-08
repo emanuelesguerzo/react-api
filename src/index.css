@@ -68,6 +68,10 @@ input {
   margin-bottom: 15px;
 }
 
+.filter {
+  margin-bottom: 40px;
+}
+
 textarea {
   resize: vertical;
 }
@@ -132,6 +136,10 @@ textarea {
   background-color: #d60000; 
 }
 
+.filter-container {
+  margin-bottom: 40px;
+}
+
 /* Card */
 .card {
   width: calc((100% - 20px) / 2);
@@ -157,6 +165,7 @@ textarea {
   user-select: none;
 }
 
+/* Tag Colors */
 .dolce {
   background-color: #f50909;
 }
